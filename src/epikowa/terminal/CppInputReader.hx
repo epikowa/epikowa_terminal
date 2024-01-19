@@ -19,18 +19,12 @@ class CppInputReader {
 		this.windowSizeCallback = windowSizeCallback;
 
 		// Node.process.stdin.on('data', handleData);
-        
+
 		Thread.create(() -> {
-			trace('starting');
 			while (true) {
 				handleData();
 			}
 		});
-	}
-
-	function trace(v:Dynamic) {
-		Log.trace(v);
-		Sys.stdout().flush();
 	}
 
 	public function destroy() {
