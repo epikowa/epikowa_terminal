@@ -1,0 +1,4 @@
+--cpp bin/cpp
+-cp src
+-main epikowa.terminal.tests.Test
+-D no-deprecation-warnings
