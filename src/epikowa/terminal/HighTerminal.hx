@@ -1,6 +1,5 @@
 package epikowa.terminal;
 
-import js.lib.Promise;
 import epikowa.events.SimpleEvent;
 
 @:nullSafety(Strict)
@@ -25,14 +24,5 @@ class HighTerminal extends Terminal {
 
     override function handleKeyPress(k:Key) {
         super.handleKeyPress(k);
-    }
-
-    public function getCursorPositionPromise():Promise<CursorPosition> {
-        return new Promise((res, reject) -> {
-            this.cursorPositionReceived.addOnce((position) -> {
-                res(position);
-            });
-            this.getCursorPosition();
-        });
     }
 }
