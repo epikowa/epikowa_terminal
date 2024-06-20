@@ -1,7 +1,12 @@
 package epikowa.terminal;
 
-import js.Syntax;
+#if cpp
+import epikowa.terminal.ext.cpp.TermIOs;
+#end
 
+#if hxnodejs
+import js.Syntax;
+#end
 @:nullSafety(Strict)
 class Terminal {
     public static final ESC = '\x1b';
@@ -10,6 +15,9 @@ class Terminal {
     public static function init() {
         #if hxnodejs
         Syntax.code('process.stdin.setRawMode(true)');
+        #end
+        #if cpp
+            TermIOs.enableRawMode();
         #end
     }
 
@@ -24,7 +32,11 @@ class Terminal {
         this.cursorPositionCallback = cursorPositionCallback;
         this.windowSizeCallback = windowSizeCallback;
 
+        #if hxnodejs
         new NodeInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        #elseif cpp
+        new CppInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        #end
     }
 
     public function moveCursorToPosition(line:Int, col:Int) {

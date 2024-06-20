@@ -4,7 +4,7 @@ This library helps managing a terminal with featuers such as setting colors, mov
 # Supported platforms, build requirements, …
 
 ## Supported platforms
-At the moment, only JavaScript/NodeJS is supported since extensions needs to be written for other platforms in order to change the terminal's mode.
+At the moment, only JavaScript/NodeJS and CPP (Linux/MacOS, no Windows at the moment) are supported since extensions needs to be written for other platforms in order to change the terminal's mode.
 
 ## Null safeness
 This library is built to handle a null safeness of __Strict__.
