@@ -8,13 +8,19 @@
 #include <stdio.h>
 
 class CppTerminal {
+private:
+    inline static struct termios orig_termios;  
 public:
 	CppTerminal() {}
 
-    static void init() {
-        struct termios orig_termios;  
-        if (tcgetattr(0,&orig_termios) < 0) fatal("can't get tty settings");
+    
+    static void disableRawMode() {
+        tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+    }
 
+    static void init() {
+        if (tcgetattr(0,&orig_termios) < 0) fatal("can't get tty settings");
+        atexit(disableRawMode);
 
         struct termios raw;
 
