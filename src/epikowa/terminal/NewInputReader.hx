@@ -2,11 +2,13 @@ package epikowa.terminal;
 
 import epikowa.terminal.CursorPosition;
 import epikowa.terminal.Key;
+#if hxnodejs
 import js.node.Buffer;
 import js.Node;
+#end
 
 @:nullSafety(Strict)
-class NodeInputReader {
+class NewInputReader {
     var keyCallback:Key->Void;
     var cursorPositionCallback:CursorPosition->Void;
     var windowSizeCallback:WindowSize->Void;
@@ -16,20 +18,24 @@ class NodeInputReader {
         this.cursorPositionCallback = cursorPositionCallback;
         this.windowSizeCallback = windowSizeCallback;
         #if hxnodejs
-        Node.process.stdin.on('data', handleData);
+        Node.process.stdin.on('data', (data:Buffer) -> {
+            handleData(data.hxToBytes());
+        });
         #end
     }
 
     public function destroy() {
+        #if hxnodejs
         Node.process.stdin.off('data', handleData);
+        #end
     }
 
-    public function handleData(data:Buffer) {
-        switch ([data.readInt8(), data.length]) {
+    public function handleData(data:haxe.io.Bytes) {
+        switch ([data.get(0), data.length]) {
             case [27, 1]:
                 keyCallback(Key.ESCAPE);
             case [27, 3]:
-                switch([data.readInt8(1), data.readInt8(2)]) {
+                switch([data.get(1), data.get(2)]) {
                     case [91, 65]:
                         keyCallback(Key.ARROW_UP);
                     case [91, 66]:
@@ -41,10 +47,11 @@ class NodeInputReader {
                     case [91, 72]:
                         keyCallback(Key.HOME);
                     default:
-                        keyCallback(UNKNOWN_ESCAPED([data.readInt8(1)]));
+                        keyCallback(UNKNOWN_ESCAPED([data.get(1)]));
                 }
             case [27, _]:
-                    var last = data.toString('utf-8', data.length-1);
+                    var last = data.toString().charAt(data.length-1);
+                    // var last = data.toString('utf-8', data.length-1);
                     if (isKittyGraphics(data)) {
                         trace('KITTY GRAPHICS CODE');
                         return;
@@ -52,7 +59,8 @@ class NodeInputReader {
                     switch (last) {
                         case 'R':
                             var regexp = ~/\[([0-9]+);([0-9]+)/;
-                            regexp.match(data.toString('utf-8', 1));
+                            var restString = data.toString().substr(1);
+                            regexp.match(restString);
                             var line = Std.parseInt(regexp.matched(1));
                             var col = Std.parseInt(regexp.matched(2));
                             if (line == null || col == null) {
@@ -62,7 +70,8 @@ class NodeInputReader {
                             }
                         case 't':
                             var regexp = ~/\[([0-9]+);([0-9]+);([0-9]+)/;
-                            var asString = data.toString('utf-8', 1);
+                            var restString = data.toString().substr(1);
+                            var asString = restString;
                             regexp.match(asString);
                             var mode = Std.parseInt(regexp.matched(1));
                             var line = Std.parseInt(regexp.matched(2)) ?? 0;
@@ -77,7 +86,7 @@ class NodeInputReader {
                             trace('unknown escaped');
                             var formattedData = new Array<Int>();
                             for (i in 1...data.length) {
-                                formattedData.push(data.readInt8(i));
+                                formattedData.push(data.get(i));
                             }
                             trace(formattedData.map(d->String.fromCharCode(d)));
                             keyCallback(UNKNOWN_ESCAPED(formattedData));
@@ -91,12 +100,12 @@ class NodeInputReader {
         }
     }
 
-    static function isKittyGraphics(data:Buffer):Bool {
+    static function isKittyGraphics(data:haxe.io.Bytes):Bool {
         if (data.length < 2) {
             return false;
         }
 
-        var s = String.fromCharCode(data.readInt8(1)) + String.fromCharCode(data.readInt8(2));
+        var s = String.fromCharCode(data.get(1)) + String.fromCharCode(data.get(2));
         if (!(s == '_G')) return false;
 
         

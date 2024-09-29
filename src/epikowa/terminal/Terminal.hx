@@ -1,6 +1,8 @@
 package epikowa.terminal;
 
+#if hxnodejs
 import js.Syntax;
+#end
 
 @:nullSafety(Strict)
 class Terminal {
@@ -10,6 +12,9 @@ class Terminal {
     public static function init() {
         #if hxnodejs
         Syntax.code('process.stdin.setRawMode(true)');
+        #end
+        #if cpp
+        CppTerminal.init();
         #end
     }
 
@@ -24,7 +29,9 @@ class Terminal {
         this.cursorPositionCallback = cursorPositionCallback;
         this.windowSizeCallback = windowSizeCallback;
 
-        new NodeInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        // new NodeInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        new NewInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+
     }
 
     public function moveCursorToPosition(line:Int, col:Int) {
