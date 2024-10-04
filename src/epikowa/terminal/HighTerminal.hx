@@ -1,6 +1,8 @@
 package epikowa.terminal;
 
+#if hxnodejs
 import js.lib.Promise;
+#end
 import epikowa.events.SimpleEvent;
 
 @:nullSafety(Strict)
@@ -27,6 +29,7 @@ class HighTerminal extends Terminal {
         super.handleKeyPress(k);
     }
 
+    #if hxnodejs
     public function getCursorPositionPromise():Promise<CursorPosition> {
         return new Promise((res, reject) -> {
             this.cursorPositionReceived.addOnce((position) -> {
@@ -35,4 +38,5 @@ class HighTerminal extends Terminal {
             this.getCursorPosition();
         });
     }
+    #end
 }

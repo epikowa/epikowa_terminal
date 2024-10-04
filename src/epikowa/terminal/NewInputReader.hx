@@ -1,5 +1,6 @@
 package epikowa.terminal;
 
+import epikowa.terminal.tests.CppReader;
 import epikowa.terminal.CursorPosition;
 import epikowa.terminal.Key;
 #if hxnodejs
@@ -20,6 +21,12 @@ class NewInputReader {
         #if hxnodejs
         Node.process.stdin.on('data', (data:Buffer) -> {
             handleData(data.hxToBytes());
+        });
+        #end
+        #if cpp
+        //TODO: Start the infinite loop here
+        CppReader.init((data:haxe.io.Bytes) -> {
+            handleData(data);
         });
         #end
     }
@@ -50,6 +57,8 @@ class NewInputReader {
                         keyCallback(UNKNOWN_ESCAPED([data.get(1)]));
                 }
             case [27, _]:
+                    Sys.stdout().flush();
+
                     var last = data.toString().charAt(data.length-1);
                     // var last = data.toString('utf-8', data.length-1);
                     if (isKittyGraphics(data)) {

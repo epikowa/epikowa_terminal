@@ -11,19 +11,26 @@ class KittyGraphics {
         var b64 = Base64.encode(File.getBytes(uri));
         var pos = 0;
         final chunkLength = 4096;
+        // trace('badaboum');
         while (pos < b64.length) {
-            Sys.print('${Terminal.ESC}_G');
+            Sys.stdout().writeString('${Terminal.ESC}_G');
             var chunk = b64.substr(pos, chunkLength);
             if(pos == 0) {
-                Sys.print('f=100,i=${identifier},');
+                Sys.stdout().writeString('f=100,i=${identifier},');
             }
             pos = pos + chunkLength;
             if(pos < b64.length) {
-                Sys.print('m=1');
+                Sys.stdout().writeString('m=1');
+            } else {
+                Sys.stdout().writeString('m=0');
             }
-            Sys.print(';${chunk}');
-            Sys.print('${Terminal.ESC}\\');
+            Sys.stdout().writeString(';${chunk}');
+            Sys.stdout().writeString('${Terminal.ESC}\\');
+
+            // trace('chunk');
         }
+        // trace('polop');
+        Sys.stdout().flush();
     }
 
     public static function placeImage(identifier:Int) {

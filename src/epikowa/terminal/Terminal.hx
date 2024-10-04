@@ -65,8 +65,11 @@ class Terminal {
     }
 
     public function getCursorPosition() {
+        trace('DO');
+        Sys.stdout().flush();
         Sys.print('${ESC}${CSI}6n');
         Sys.stdout().flush();
+        trace('DO2');
     }
 
     public function hideCursor() {

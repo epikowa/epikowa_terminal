@@ -1,41 +1,49 @@
 package epikowa.terminal.tests;
 
+import sys.thread.Thread;
 import haxe.crypto.Base64;
 import sys.io.File;
 import epikowa.terminal.Mode.WriteModes;
 import epikowa.terminal.Colors.AnyTrueColor;
 
 class Test {
-    // static var terminal:HighTerminal;
+    static var terminal:HighTerminal;
 
     public static function main() {
         Terminal.init();
-        // terminal = new HighTerminal(gotKey, gotCursorPosition, gotWindowSize);
-        // terminal.eraseScreen();
-        // terminal.hideCursor();
-        // terminal.moveCursorToPosition(3, 15);
-        // terminal.windowSizeReceived.add((ws) -> trace('Triggered WS'));
-        // Sys.print('Position');
-        // terminal.moveCursorRight(3);
-        // Sys.print('Continue');
-        // terminal.moveCursorDown(1);
-        // terminal.modes.selectBackgroundTrueColor({r: 100, g: 100, b: 100});
-        // terminal.modes.setWriteMode(SET_BOLD);
-        // Sys.print('Err');
-        // terminal.modes.setWriteMode(RESET_BOLD);
-        // terminal.modes.selectBackgroundColor16Bit(Default);
-        // terminal.modes.selectForegroundColor16Bit(Cyan);
-        // terminal.modes.setWriteMode(SET_STRIKETHROUGH);
-        // Sys.print('Cyan');
-        // terminal.modes.setWriteMode(RESET_STRIKETHROUGH);
-        // terminal.modes.selectForegroundColor16Bit(Default);
-        // Sys.print('Reset');
-        // terminal.getCursorPosition();
+        terminal = new HighTerminal(gotKey, gotCursorPosition, gotWindowSize);
+        terminal.eraseScreen();
+        terminal.hideCursor();
+        terminal.moveCursorToPosition(3, 15);
+        terminal.windowSizeReceived.add((ws) -> trace('Triggered WS'));
+        Sys.print('Position');
+        terminal.moveCursorRight(3);
+        Sys.print('Continue');
+        terminal.moveCursorDown(1);
+        terminal.modes.selectBackgroundTrueColor({r: 100, g: 100, b: 100});
+        terminal.modes.setWriteMode(SET_BOLD);
+        Sys.print('Err');
+        terminal.modes.setWriteMode(RESET_BOLD);
+        terminal.modes.selectBackgroundColor16Bit(Default);
+        terminal.modes.selectForegroundColor16Bit(Cyan);
+        terminal.modes.setWriteMode(SET_STRIKETHROUGH);
+        Sys.print('Cyan');
+        terminal.modes.setWriteMode(RESET_STRIKETHROUGH);
+        terminal.modes.selectForegroundColor16Bit(Default);
+        Sys.print('Reset');
+        terminal.getCursorPosition();
+        // Sys.sleep(5);
 
         // readPNG();
-        KittyGraphics.transmitPNG(Sys.args()[0], 45);
-        // Sys.sleep(1);
-        KittyGraphics.placeImage(45);
+        // KittyGraphics.transmitPNG(Sys.args()[0], 45);
+        // KittyGraphics.placeImage(45);
+        #if cpp
+        // epikowa.terminal.tests.CppReader.init();
+        // CppReader.read();
+        while (true) {
+            Thread.processEvents();
+        }
+        #end
     }
 
     static function gotWindowSize(ws:WindowSize) {
@@ -46,7 +54,7 @@ class Test {
     }
 
     static function readPNG() {
-        var uri = 'file.png';
+        var uri = Sys.args()[0];
 
         var b64 = Base64.encode(File.getBytes(uri));
         var pos = 0;
@@ -75,32 +83,32 @@ class Test {
     }
 
     static function gotKey(k:Key) {
-        // switch (k) {
-        //     case CHAR(char):
-        //         Sys.print(char);
-        //     case BACKSPACE:
-        //         terminal.writeBackspace();
-        //         Sys.print(' ');
-        //         terminal.moveCursorLeft(1);
-        //     case ENTER:
-        //         terminal.showCursor();
-        //         terminal.askCharactersDimensions();
-        //     case ESCAPE:
-        //         terminal.showCursor();
-        //         Sys.exit(0);
-        //     case ARROW_LEFT:
-        //         terminal.moveCursorLeft(1);
-        //     case ARROW_RIGHT:
-        //         terminal.moveCursorRight(1);
-        //     case ARROW_UP:
-        //         terminal.moveCursorUp(1);
-        //         // terminal.cursorPositionReceived.addOnce((cp) -> {
-        //         //     trace('CURSOR EVENT');
-        //         // });
-        //         // terminal.getCursorPosition();
-        //     case ARROW_DOWN:
-        //         terminal.moveCursorDown(1);
-        //     default:
-        // }
+        switch (k) {
+            case CHAR(char):
+                Sys.print(char);
+            case BACKSPACE:
+                terminal.writeBackspace();
+                Sys.print(' ');
+                terminal.moveCursorLeft(1);
+            case ENTER:
+                terminal.showCursor();
+                terminal.askCharactersDimensions();
+            case ESCAPE:
+                terminal.showCursor();
+                Sys.exit(0);
+            case ARROW_LEFT:
+                terminal.moveCursorLeft(1);
+            case ARROW_RIGHT:
+                terminal.moveCursorRight(1);
+            case ARROW_UP:
+                terminal.moveCursorUp(1);
+                // terminal.cursorPositionReceived.addOnce((cp) -> {
+                //     trace('CURSOR EVENT');
+                // });
+                // terminal.getCursorPosition();
+            case ARROW_DOWN:
+                terminal.moveCursorDown(1);
+            default:
+        }
     }
 }
