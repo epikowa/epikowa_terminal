@@ -1,0 +1,5 @@
+--js bin/index.js
+--class-path web_test/src
+--class-path web_test/.haxelib/xterm-xterm/5,5,0
+--class-path src
+--main epikowa.terminal.tests.Test

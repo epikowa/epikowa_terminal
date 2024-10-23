@@ -1,0 +1,4 @@
+-js bin/index.js
+--class-path src
+--library xterm-xterm
+--main Main

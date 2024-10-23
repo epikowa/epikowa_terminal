@@ -1,8 +1,13 @@
 package epikowa.terminal.tests;
 
+#if js
+import js.Syntax;
+#end
+#if cpp
 import sys.thread.Thread;
-import haxe.crypto.Base64;
 import sys.io.File;
+#end
+import haxe.crypto.Base64;
 import epikowa.terminal.Mode.WriteModes;
 import epikowa.terminal.Colors.AnyTrueColor;
 
@@ -10,27 +15,36 @@ class Test {
     static var terminal:HighTerminal;
 
     public static function main() {
+        #if (js && !hxnodejs)
+        var term = new xterm.xterm.xterm.Terminal();
+        term.open(js.Browser.document.getElementById('terminal'));
+        var pty = Syntax.code('openpty()');
+        var slave = pty.slave;
+        var master = pty.master;
+        Streams.slave = slave;
+        term.loadAddon(master);
+        #end
         Terminal.init();
         terminal = new HighTerminal(gotKey, gotCursorPosition, gotWindowSize);
         terminal.eraseScreen();
         terminal.hideCursor();
         terminal.moveCursorToPosition(3, 15);
         terminal.windowSizeReceived.add((ws) -> trace('Triggered WS'));
-        Sys.print('Position');
+        Streams.print('Position');
         terminal.moveCursorRight(3);
-        Sys.print('Continue');
+        Streams.print('Continue');
         terminal.moveCursorDown(1);
         terminal.modes.selectBackgroundTrueColor({r: 100, g: 100, b: 100});
         terminal.modes.setWriteMode(SET_BOLD);
-        Sys.print('Err');
+        Streams.print('Err');
         terminal.modes.setWriteMode(RESET_BOLD);
         terminal.modes.selectBackgroundColor16Bit(Default);
         terminal.modes.selectForegroundColor16Bit(Cyan);
         terminal.modes.setWriteMode(SET_STRIKETHROUGH);
-        Sys.print('Cyan');
+        Streams.print('Cyan');
         terminal.modes.setWriteMode(RESET_STRIKETHROUGH);
         terminal.modes.selectForegroundColor16Bit(Default);
-        Sys.print('Reset');
+        Streams.print('Reset');
         terminal.getCursorPosition();
         // Sys.sleep(5);
 
@@ -40,6 +54,7 @@ class Test {
         #if cpp
         // epikowa.terminal.tests.CppReader.init();
         // CppReader.read();
+        // TestMacro.traceMarkup(<String myVar=" " />);
         while (true) {
             Thread.processEvents();
         }
@@ -53,6 +68,7 @@ class Test {
         }
     }
 
+    #if cpp
     static function readPNG() {
         var uri = Sys.args()[0];
 
@@ -60,19 +76,20 @@ class Test {
         var pos = 0;
         final chunkLength = 4096;
         while (pos < b64.length) {
-            Sys.print('${Terminal.ESC}_G');
+            Streams.print('${Terminal.ESC}_G');
             var chunk = b64.substr(pos, chunkLength);
             if(pos == 0) {
-                Sys.print('a=T,f=100,');
+                Streams.print('a=T,f=100,');
             }
             pos = pos + chunkLength;
             if(pos < b64.length) {
-                Sys.print('m=1');
+                Streams.print('m=1');
             }
-            Sys.print(';${chunk}');
-            Sys.print('${Terminal.ESC}\\');
+            Streams.print(';${chunk}');
+            Streams.print('${Terminal.ESC}\\');
         }
     }
+    #end
 
     static function gotCursorPosition(cp:CursorPosition) {
         switch (cp) {
@@ -85,17 +102,17 @@ class Test {
     static function gotKey(k:Key) {
         switch (k) {
             case CHAR(char):
-                Sys.print(char);
+                // Streams.print(char);
             case BACKSPACE:
                 terminal.writeBackspace();
-                Sys.print(' ');
+                Streams.print(' ');
                 terminal.moveCursorLeft(1);
             case ENTER:
                 terminal.showCursor();
                 terminal.askCharactersDimensions();
             case ESCAPE:
                 terminal.showCursor();
-                Sys.exit(0);
+                // Sys.exit(0);
             case ARROW_LEFT:
                 terminal.moveCursorLeft(1);
             case ARROW_RIGHT:

@@ -11,33 +11,33 @@ class Mode {
     }
 
     public function selectForegroundTrueColor(color:AnyTrueColor) {
-        Sys.stdout().writeString('${ESC}${CSI}38;2;${Std.string(color.r)};${Std.string(color.g)};${Std.string(color.b)}m');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}38;2;${Std.string(color.r)};${Std.string(color.g)};${Std.string(color.b)}m');
+        Streams.flush();
     }
 
     public function selectBackgroundTrueColor(color:AnyTrueColor) {
-        Sys.stdout().writeString('${ESC}${CSI}48;2;${Std.string(color.r)};${Std.string(color.g)};${Std.string(color.b)}m');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}48;2;${Std.string(color.r)};${Std.string(color.g)};${Std.string(color.b)}m');
+        Streams.flush();
     }
 
     public function selectForegroundColor16Bit(code:Foreground16BitColors) {
-        Sys.stdout().writeString('${ESC}${CSI}${code}m');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}${code}m');
+        Streams.flush();
     }
 
     public function selectBackgroundColor16Bit(code:Background16BitColors) {
-        Sys.stdout().writeString('${ESC}${CSI}${code}m');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}${code}m');
+        Streams.flush();
     }
 
     public function setMode(mode:ScreenModes) {
-        Sys.stdout().writeString('${ESC}${CSI}=${Std.string(mode)}h');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}=${Std.string(mode)}h');
+        Streams.flush();
     }
 
     public function setWriteMode(mode:WriteModes) {
-        Sys.stdout().writeString('${ESC}${CSI}${Std.string(mode)}m');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}${Std.string(mode)}m');
+        Streams.flush();
     }
 }
 

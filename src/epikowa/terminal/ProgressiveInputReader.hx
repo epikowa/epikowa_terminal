@@ -11,7 +11,7 @@ import js.Node;
 #end
 
 @:nullSafety(Strict)
-class NewInputReader {
+class ProgressiveInputReader {
     var keyCallback:Key->Void;
     var cursorPositionCallback:CursorPosition->Void;
     var windowSizeCallback:WindowSize->Void;
@@ -59,7 +59,7 @@ class NewInputReader {
                         keyCallback(UNKNOWN_ESCAPED([data.get(1)]));
                 }
             case [27, _]:
-                    Streams.flush();
+                    Sys.stdout().flush();
 
                     var last = data.toString().charAt(data.length-1);
                     // var last = data.toString('utf-8', data.length-1);

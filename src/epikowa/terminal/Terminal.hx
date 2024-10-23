@@ -35,61 +35,61 @@ class Terminal {
     }
 
     public function moveCursorToPosition(line:Int, col:Int) {
-        Sys.print('${ESC}${CSI}${line};${col}H');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}${line};${col}H');
+        Streams.flush();
     }
 
     public function moveCursorUp(count:Int) {
-        Sys.print('${ESC}${CSI}${count}A');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}${count}A');
+        Streams.flush();
     }
 
     public function moveCursorDown(count:Int) {
-        Sys.print('${ESC}${CSI}${count}B');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}${count}B');
+        Streams.flush();
     }
 
     public function moveCursorLeft(count:Int) {
-        Sys.print('${ESC}${CSI}${count}D');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}${count}D');
+        Streams.flush();
     }
 
     public function moveCursorRight(count:Int) {
-        Sys.print('${ESC}${CSI}${count}C');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}${count}C');
+        Streams.flush();
     }
 
     public function eraseScreen() {
-        Sys.stdout().writeString('${ESC}${CSI}2J');
-        Sys.stdout().flush();
+        Streams.writeString('${ESC}${CSI}2J');
+        Streams.flush();
     }
 
     public function getCursorPosition() {
         trace('DO');
-        Sys.stdout().flush();
-        Sys.print('${ESC}${CSI}6n');
-        Sys.stdout().flush();
+        Streams.flush();
+        Streams.print('${ESC}${CSI}6n');
+        Streams.flush();
         trace('DO2');
     }
 
     public function hideCursor() {
-        Sys.print('${ESC}${CSI}?25l');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}?25l');
+        Streams.flush();
     }
 
     public function showCursor() {
-        Sys.print('${ESC}${CSI}?25h');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}?25h');
+        Streams.flush();
     }
 
     public function writeBackspace() {
-        Sys.print('\x08');
-        Sys.stdout().flush();
+        Streams.print('\x08');
+        Streams.flush();
     }
 
     public function writeBell() {
-        Sys.print('\x07');
-        Sys.stdout().flush();
+        Streams.print('\x07');
+        Streams.flush();
     }
 
     function handleKeyPress(k:Key) {
@@ -105,7 +105,12 @@ class Terminal {
     }
 
     public function askCharactersDimensions() {
-        Sys.print('${ESC}${CSI}18t');
-        Sys.stdout().flush();
+        Streams.print('${ESC}${CSI}18t');
+        Streams.flush();
+    }
+
+    public function askPrimaryDeviceAttributes() {
+        Streams.print('${ESC}${CSI}0c');
+        Streams.flush();
     }
 }
