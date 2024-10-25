@@ -1,5 +1,8 @@
 package epikowa.terminal;
 
+import js.html.TextDecoder;
+import js.lib.Uint16Array;
+import haxe.io.Bytes;
 #if cpp
 import epikowa.terminal.tests.CppReader;
 #end
@@ -20,6 +23,15 @@ class NewInputReader {
         this.keyCallback = keyCallback;
         this.cursorPositionCallback = cursorPositionCallback;
         this.windowSizeCallback = windowSizeCallback;
+        #if (js && !hxnodejs)
+        Streams.slave.onReadable(() -> {
+            var read = Streams.slave.read();
+            var ar = new js.lib.Uint8Array(read);
+            var decoder = new TextDecoder();
+            var decodedString = decoder.decode(ar);
+            handleData(Bytes.ofString(decodedString));
+        });
+        #end
         #if hxnodejs
         Node.process.stdin.on('data', (data:Buffer) -> {
             handleData(data.hxToBytes());

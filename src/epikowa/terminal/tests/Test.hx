@@ -15,15 +15,21 @@ class Test {
     static var terminal:HighTerminal;
 
     public static function main() {
+
         #if (js && !hxnodejs)
-        var term = new xterm.xterm.xterm.Terminal();
+        var term = new xterm.xterm.xterm.Terminal({});
+        Streams.xterm = term;
         term.open(js.Browser.document.getElementById('terminal'));
         var pty = Syntax.code('openpty()');
         var slave = pty.slave;
         var master = pty.master;
+        var getioctl = slave.ioctl('TCGETS', null);
+        getioctl.lflag = getioctl.lflag & ~8 & ~16 & ~2;
+        slave.ioctl('TCSETS', getioctl);
         Streams.slave = slave;
         term.loadAddon(master);
         #end
+
         Terminal.init();
         terminal = new HighTerminal(gotKey, gotCursorPosition, gotWindowSize);
         terminal.eraseScreen();
@@ -112,6 +118,7 @@ class Test {
                 terminal.askCharactersDimensions();
             case ESCAPE:
                 terminal.showCursor();
+                trace('Exiting');
                 // Sys.exit(0);
             case ARROW_LEFT:
                 terminal.moveCursorLeft(1);

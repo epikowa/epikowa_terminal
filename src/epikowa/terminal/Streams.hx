@@ -3,6 +3,10 @@ package epikowa.terminal;
 class Streams {
     public static var slave:Dynamic;
 
+    #if (js && !hxnodejs)
+    public static var xterm:xterm.xterm.xterm.Terminal;
+    #end
+
     public static function writeString(str:String):Void {
         #if (js && !hxnodejs)
         slave.write(str);
