@@ -1,8 +1,10 @@
 package epikowa.terminal;
 
 import haxe.io.BytesData;
+#if (js && !hxnodejs)
 import js.html.TextDecoder;
 import js.lib.Uint16Array;
+#end
 import haxe.io.Bytes;
 #if cpp
 import epikowa.terminal.tests.CppReader;
