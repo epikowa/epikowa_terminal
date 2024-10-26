@@ -25,6 +25,7 @@ class Test {
         var master = pty.master;
         var getioctl = slave.ioctl('TCGETS', null);
         getioctl.lflag = getioctl.lflag & ~8 & ~16 & ~2;
+        getioctl.iflag = getioctl.iflag & ~256 & ~32 & ~1024;
         slave.ioctl('TCSETS', getioctl);
         Streams.slave = slave;
         term.loadAddon(master);

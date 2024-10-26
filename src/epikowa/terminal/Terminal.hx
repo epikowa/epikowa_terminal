@@ -30,7 +30,8 @@ class Terminal {
         this.windowSizeCallback = windowSizeCallback;
 
         // new NodeInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
-        new NewInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        // new NewInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        new ProgressiveInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
 
     }
 
