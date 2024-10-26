@@ -83,34 +83,27 @@ class ProgressiveInputReader {
     }
 
     function parseEsc(data:Bytes, byte:Int, index:Int) {
-        trace('parse ESC', byte);
         switch (byte) {
             case 91:
                 currentMode = ParserMode.Csi;
             default:
-                trace('ESC default');
         }
     }
 
     var currentP:Array<Int> = [];
     var currentI:Array<Int> = [];
     function parseCsi(data:Bytes, byte:Int, index:Int) {
-        trace('parse CSI', byte);
         if (byte >= 48 && byte <= 63) { //P
-            trace('IT IS P');
             currentP.push(byte);
         } else if (byte >= 64 && byte <= 126) { //F
-            trace('calling handleCompleted');
             handleCompletedCSI();
         } else if (byte >= 32 && byte <= 47) { //I
-            trace('It is I');
             currentI.push(byte);
         }
     }
     
     function handleCompletedCSI() {
         var lastByte = treated[treated.length -1];
-        trace('handle CSI', lastByte);
         switch (lastByte) {
             case 65:
                 keyCallback(Key.ARROW_UP);
@@ -122,7 +115,6 @@ class ProgressiveInputReader {
                 keyCallback(Key.ARROW_RIGHT);
                 resetParser();
             case 68:
-                trace('IT IS LEFT');
                 keyCallback(Key.ARROW_LEFT);
                 resetParser();
             case 72:
@@ -160,7 +152,6 @@ class ProgressiveInputReader {
     public function handleData(data:haxe.io.Bytes) {
         for (i in 0...data.length) {
             var byte = data.get(i);
-            trace('handle', byte);
             treated.push(byte);
 
             if (data.length == 1 && byte == 27) {
