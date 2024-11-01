@@ -31,7 +31,7 @@ class Terminal {
 
         // new NodeInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
         // new NewInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
-        new ProgressiveInputReader(handleKeyPress, handleCursorPosition, handleWindowSize);
+        new ProgressiveInputReader(handleKeyPress, handleCursorPosition, handleWindowSize, handleInBandWindowSize);
 
     }
 
@@ -105,6 +105,10 @@ class Terminal {
         windowSizeCallback != null ? windowSizeCallback(ws) : null;
     }
 
+    function handleInBandWindowSize(ws:WindowSize) {
+        trace('INBANDRESIZE');
+    }
+
     public function askCharactersDimensions() {
         Streams.print('${ESC}${CSI}18t');
         Streams.flush();
@@ -112,6 +116,21 @@ class Terminal {
 
     public function askPrimaryDeviceAttributes() {
         Streams.print('${ESC}${CSI}0c');
+        Streams.flush();
+    }
+
+    public function askInBandWindowResizeSupport() {
+        Streams.print('${ESC}${CSI}?2048$$p');
+        Streams.flush();
+    }
+
+    public function enableInBandWindowResize() {
+        Streams.print('${ESC}${CSI}?2048h');
+        Streams.flush();
+    }
+
+    public function disableInBandWindowResize() {
+        Streams.print('${ESC}${CSI}?2048l');
         Streams.flush();
     }
 }

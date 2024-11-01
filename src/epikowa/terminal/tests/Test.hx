@@ -1,5 +1,6 @@
 package epikowa.terminal.tests;
 
+import epikowa.terminal.Colors.Foreground16BitColors;
 #if js
 import js.Syntax;
 #end
@@ -49,8 +50,13 @@ class Test {
         terminal.modes.selectForegroundColor16Bit(Cyan);
         terminal.modes.setWriteMode(SET_STRIKETHROUGH);
         Streams.print('Cyan');
+        terminal.moveCursorToPosition(3,15);
+        // terminal.modes.selectForegroundColor16Bit(Foreground16BitColors.Green);
+        terminal.modes.selectBackgroundTrueColor({r: 200, g:100, b:0});
         terminal.modes.setWriteMode(RESET_STRIKETHROUGH);
-        terminal.modes.selectForegroundColor16Bit(Default);
+        terminal.askInBandWindowResizeSupport();
+        terminal.enableInBandWindowResize();
+        // terminal.modes.selectForegroundColor16Bit(Default);
         Streams.print('Reset');
         terminal.getCursorPosition();
         // Sys.sleep(5);
@@ -120,7 +126,7 @@ class Test {
             case ESCAPE:
                 terminal.showCursor();
                 trace('Exiting');
-                // Sys.exit(0);
+                Sys.exit(0);
             case ARROW_LEFT:
                 terminal.moveCursorLeft(1);
             case ARROW_RIGHT:

@@ -21,11 +21,13 @@ class ProgressiveInputReader {
     var keyCallback:Key->Void;
     var cursorPositionCallback:CursorPosition->Void;
     var windowSizeCallback:WindowSize->Void;
+    var inBandWindowSizeCallback:WindowSize->Void;
 
-    public function new(keyCallback:Key->Void, cursorPositionCallback:CursorPosition->Void, windowSizeCallback:WindowSize->Void) {
+    public function new(keyCallback:Key->Void, cursorPositionCallback:CursorPosition->Void, windowSizeCallback:WindowSize->Void, inBandWindowSizeCallback:WindowSize->Void) {
         this.keyCallback = keyCallback;
         this.cursorPositionCallback = cursorPositionCallback;
         this.windowSizeCallback = windowSizeCallback;
+        this.inBandWindowSizeCallback = inBandWindowSizeCallback;
         #if (js && !hxnodejs)
         Streams.slave.onReadable(() -> {
             var read = Streams.slave.read();
@@ -142,8 +144,15 @@ class ProgressiveInputReader {
                 switch (mode) {
                     case 8: // size of the text area in chars
                         windowSizeCallback(WindowSize.Characters(line, col));
+                    case 48:
+                        inBandWindowSizeCallback(WindowSize.Characters(line, col));
                     default:
                 }
+            case 121: //y
+                var pString = currentP.map((b)-> String.fromCharCode(b)).join('');
+                var resultChar = pString.split(';').pop();
+                var result = !(resultChar == '0' || resultChar == '4');
+                trace('GOT REPLY', result);
             default:
                 resetParser();
         }
